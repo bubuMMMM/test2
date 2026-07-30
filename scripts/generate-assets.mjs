@@ -33,21 +33,15 @@ async function findFont(dir) {
     if (entry.isDirectory()) {
       const found = await findFont(path);
       if (found) return found;
-    } else if (/space-grotesk.*latin.*700.*\.(woff2?|ttf)$/i.test(entry.name)) {
+    } else if (/space-grotesk.*latin.*700.*normal.*\.(woff|ttf)$/i.test(entry.name)) {
       return path;
     }
   }
 }
 
-let fontData;
-try {
-  fontData = await fetchBuffer('https://raw.githubusercontent.com/google/fonts/main/ofl/spacegrotesk/SpaceGrotesk%5Bwght%5D.ttf');
-} catch (error) {
-  console.warn('Remote OG font unavailable, using Fontsource package:', error.message);
-  const local = await findFont(join(root, 'node_modules', '@fontsource', 'space-grotesk'));
-  if (!local) throw new Error('No font available for Satori');
-  fontData = await readFile(local);
-}
+const staticFont = await findFont(join(root, 'node_modules', '@fontsource', 'space-grotesk'));
+if (!staticFont) throw new Error('No static Space Grotesk font available for Satori');
+const fontData = await readFile(staticFont);
 
 function textInitials(name) {
   return name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase();
