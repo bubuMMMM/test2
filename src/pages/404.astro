@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+Astro.response.status = 404;
+---
+<BaseLayout title="404: app not found" description="This SaaS target is not in the directory." noindex={true}>
+  <section class="prompt-page container" style="min-height:60vh;display:grid;align-content:center">
+    <p class="eyebrow">404 / target escaped</p>
+    <h1>That subscription is <span class="green">still alive.</span></h1>
+    <p class="lead">Either the URL is wrong or nobody has added this app to the death list yet.</p>
+    <p style="margin-top:30px"><a class="button" href="/">RETURN TO THE MARKET →</a></p>
+  </section>
+</BaseLayout>

@@ -1,0 +1,49 @@
+---
+const { source = 'homepage' } = Astro.props;
+---
+<section class="waitlist reveal" id="waitlist">
+  <div class="waitlist-grid">
+    <div>
+      <p class="eyebrow">New teardown alerts</p>
+      <h2>Find out what dies next.</h2>
+      <p class="section-sub">One useful email when a new SaaS rebuild prompt lands. No drip campaign. No growth-hacker theatre.</p>
+    </div>
+    <form class="waitlist-form-wrap" data-waitlist-form>
+      <div class="waitlist-form">
+        <label class="honeypot">Company<input name="company" tabindex="-1" autocomplete="off" /></label>
+        <input type="hidden" name="source" value={source} />
+        <input class="input" type="email" name="email" autocomplete="email" required placeholder="you@company.com" aria-label="Email address" />
+        <button class="button" type="submit">JOIN WAITLIST →</button>
+      </div>
+      <div class="form-status" role="status" aria-live="polite"></div>
+    </form>
+  </div>
+</section>
+<script is:inline>
+  document.querySelectorAll('[data-waitlist-form]').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = form.querySelector('button');
+      const status = form.querySelector('.form-status');
+      button.disabled = true;
+      status.textContent = 'TRANSMITTING…';
+      try {
+        const response = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        });
+        const data = await response.json();
+        status.textContent = data.message;
+        if (response.ok) {
+          form.reset();
+          button.textContent = 'YOU’RE IN ✓';
+        }
+      } catch {
+        status.textContent = 'Network error. Please try again.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>

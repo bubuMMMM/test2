@@ -1,0 +1,25 @@
+{
+  "slug": "typeform",
+  "name": "Typeform",
+  "domain": "typeform.com",
+  "category": "Forms",
+  "priceMonthly": 29,
+  "verdict": "yes",
+  "whatYouLose": [
+    "Advanced respondent analytics and drop-off reporting",
+    "A huge template and integration marketplace",
+    "Enterprise compliance workflows and support"
+  ],
+  "priorArt": [
+    {
+      "name": "Formbricks",
+      "url": "https://github.com/formbricks/formbricks"
+    },
+    {
+      "name": "HeyForm",
+      "url": "https://github.com/heyform/heyform"
+    }
+  ],
+  "prompt": "Create a conversational form builder with one question per screen, conditional branching, keyboard navigation, themes, custom thank-you screens, share links, webhook delivery, CSV export, email notifications, response limits, and a results dashboard. Use Astro SSR, vanilla JavaScript and SQLite. Provide a drag-free schema editor that stores forms as JSON, validates all inputs server-side, supports accessible controls, and includes anti-spam honeypots and rate limits.",
+  "notes": "For lead capture, onboarding and surveys, the core product is surprisingly small. Sophisticated analytics and governance are the expensive edge."
+}

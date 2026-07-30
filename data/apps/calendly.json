@@ -1,0 +1,25 @@
+{
+  "slug": "calendly",
+  "name": "Calendly",
+  "domain": "calendly.com",
+  "category": "Scheduling",
+  "priceMonthly": 12,
+  "verdict": "yes",
+  "whatYouLose": [
+    "Round-robin routing across large sales teams",
+    "Enterprise SSO, SCIM and centralized administration",
+    "Deep native integrations maintained by a dedicated vendor"
+  ],
+  "priorArt": [
+    {
+      "name": "Cal.com",
+      "url": "https://github.com/calcom/cal.com"
+    },
+    {
+      "name": "Rallly",
+      "url": "https://github.com/lukevella/rallly"
+    }
+  ],
+  "prompt": "Build a production-ready scheduling app for a solo operator or small team. Users can define weekly availability, connect Google Calendar through OAuth, publish booking pages, collect attendee details, prevent double bookings, add buffers, send confirmation and reminder emails, and cancel or reschedule through secure links. Use Astro server rendering, vanilla JavaScript, SQLite, accessible forms, timezone-safe date handling, an admin dashboard, and automated tests. Include setup documentation and seed data.",
+  "notes": "A focused booking flow is straightforward. The hard part begins when you need enterprise routing, compliance and dozens of integrations."
+}

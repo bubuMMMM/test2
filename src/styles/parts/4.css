@@ -1,0 +1,78 @@
+
+.vote-meter strong { display: block; color: var(--green); font: 700 30px 'JetBrains Mono', monospace; }
+.vote-meter span { color: var(--muted); font: 500 10px 'JetBrains Mono', monospace; }
+
+.related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.related-card { min-height: 180px; padding: 20px; border: 1px solid var(--line); background: var(--panel); transition: .18s ease; }
+.related-card:hover { border-color: var(--green); transform: translateY(-5px); box-shadow: var(--shadow); }
+.related-card .favicon { margin-bottom: 26px; }
+.related-card h3 { margin: 0 0 7px; font-size: 21px; }
+.related-meta { color: var(--muted); font: 500 11px 'JetBrains Mono', monospace; }
+
+.faq { display: grid; gap: 10px; }
+details { border: 1px solid var(--line); background: var(--panel); }
+summary { cursor: pointer; padding: 20px 52px 20px 20px; list-style: none; position: relative; font-weight: 600; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: '+'; position: absolute; right: 20px; top: 15px; color: var(--green); font: 500 25px 'JetBrains Mono', monospace; }
+details[open] summary::after { content: '−'; }
+details p { margin: 0; padding: 0 20px 22px; color: var(--muted); }
+
+.prompt-page { padding: 78px 0; }
+.prompt-page h1 { margin: 0 0 20px; font-size: clamp(45px,7vw,90px); letter-spacing: -.065em; line-height: .92; }
+.prompt-page .lead { max-width: 720px; color: var(--muted); font-size: 19px; }
+
+.site-footer { margin-top: 90px; border-top: 1px solid var(--line); }
+.footer-grid { display: grid; grid-template-columns: 1fr auto; gap: 40px; padding: 42px 0; align-items: center; }
+.footer-copy { color: var(--muted); font: 500 11px 'JetBrains Mono', monospace; }
+.footer-links { display: flex; gap: 18px; color: var(--muted); font: 500 11px 'JetBrains Mono', monospace; }
+.footer-links a:hover { color: var(--green); }
+
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes pulse { 50% { opacity: .35; transform: scale(.7); } }
+
+@media (max-width: 900px) {
+  .list-head { display: none; }
+  .app-row { grid-template-columns: 42px minmax(0,1fr) auto; gap: 0; padding: 14px 4px; }
+  .app-row .category, .app-row .price { display: none; }
+  .app-row .badge { grid-column: 3; grid-row: 1; }
+  .app-row .vote-count { grid-column: 3; grid-row: 2; padding-top: 6px; }
+  .app-row .rank { grid-row: 1 / span 2; }
+  .app-row .app-identity { grid-row: 1 / span 2; }
+  .waitlist-grid, .app-title-grid, .content-grid { grid-template-columns: 1fr; }
+  .action-stack { position: static; grid-template-columns: 1fr 1fr; }
+  .vote-meter { grid-column: 1 / -1; }
+  .related-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .container { width: min(100% - 22px, 1160px); }
+  .nav a { display: none; }
+  .hero { padding-top: 66px; }
+  .hero h1 { font-size: clamp(48px, 16vw, 72px); }
+  .search-input { min-height: 62px; font-size: 14px; }
+  .search-kbd { display: none; }
+  .market-top { grid-template-columns: 1fr; }
+  .market-label { border-right: 0; border-bottom: 1px solid var(--line); }
+  .market-status { justify-content: center; }
+  .mrr-number { font-size: clamp(37px, 12vw, 56px); }
+  .section-head { align-items: start; flex-direction: column; }
+  .waitlist-form { flex-direction: column; }
+  .app-row { grid-template-columns: 30px minmax(0,1fr); }
+  .app-row .badge, .app-row .vote-count { display: none; }
+  .app-hero h1 { font-size: clamp(48px, 15vw, 75px); }
+  .prompt-top { align-items: flex-start; flex-direction: column; padding-block: 13px; }
+  .copy-actions { width: 100%; }
+  .copy-btn { flex: 1; }
+  .action-stack { grid-template-columns: 1fr; }
+  .vote-meter { grid-column: auto; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-links { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition-duration: .001ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}

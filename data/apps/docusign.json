@@ -1,0 +1,25 @@
+{
+  "slug": "docusign",
+  "name": "DocuSign",
+  "domain": "docusign.com",
+  "category": "Documents",
+  "priceMonthly": 25,
+  "verdict": "no",
+  "whatYouLose": [
+    "Legal and regulatory assurance across jurisdictions",
+    "Identity verification, audit evidence and tamper controls",
+    "Enterprise integrations, templates and signer reliability"
+  ],
+  "priorArt": [
+    {
+      "name": "Documenso",
+      "url": "https://github.com/documenso/documenso"
+    },
+    {
+      "name": "OpenSign",
+      "url": "https://github.com/OpenSignLabs/OpenSign"
+    }
+  ],
+  "prompt": "Build a basic document approval and signature workflow for low-risk internal agreements. Upload PDF files, place text and signature fields, invite signers by email, issue expiring secure links, capture consent, create a timestamped audit log, lock the final document hash, and provide signed PDF downloads. Use Astro SSR and vanilla JavaScript. Clearly label the product as unsuitable for regulated or high-stakes legal transactions without professional review.",
+  "notes": "You can reproduce the gesture of signing. You cannot casually reproduce the legal, identity and evidentiary system customers rely on."
+}

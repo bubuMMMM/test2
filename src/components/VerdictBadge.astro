@@ -1,0 +1,5 @@
+---
+import { verdictLabel } from '../lib/apps.js';
+const { verdict } = Astro.props;
+---
+<span class={`badge badge-${verdict}`}>{verdictLabel(verdict)}</span>

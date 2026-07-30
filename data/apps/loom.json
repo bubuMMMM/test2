@@ -1,0 +1,25 @@
+{
+  "slug": "loom",
+  "name": "Loom",
+  "domain": "loom.com",
+  "category": "Video",
+  "priceMonthly": 15,
+  "verdict": "kinda",
+  "whatYouLose": [
+    "Extremely reliable cross-browser and desktop recording",
+    "Fast global video processing and adaptive streaming",
+    "Transcription quality, editing tools and team libraries"
+  ],
+  "priorArt": [
+    {
+      "name": "Cap",
+      "url": "https://github.com/CapSoftware/Cap"
+    },
+    {
+      "name": "Screenity",
+      "url": "https://github.com/alyssaxuu/screenity"
+    }
+  ],
+  "prompt": "Build a lightweight asynchronous screen recorder for a small internal team. Use the browser MediaRecorder API to capture screen, microphone and optional camera, upload chunks to object storage, create share pages, support comments with timestamps, generate poster frames, allow trimming start and end points, and provide expiring links. Use Astro SSR and vanilla JavaScript. Document browser limitations clearly and include a fallback for uploading prerecorded files.",
+  "notes": "A browser recorder is feasible. Matching Loom’s capture reliability, encoding pipeline and collaboration polish is a serious media engineering project."
+}

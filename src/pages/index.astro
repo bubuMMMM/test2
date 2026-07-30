@@ -1,0 +1,178 @@
+---
+export const prerender = false;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import VerdictBadge from '../components/VerdictBadge.astro';
+import Waitlist from '../components/Waitlist.astro';
+import { apps, categoryMeta, monthlyMRR } from '../lib/apps.js';
+import { getVoteCounts } from '../lib/db.js';
+import { canonical, defaultDescription, organizationName, siteName } from '../lib/site.js';
+
+const voteCounts = getVoteCounts();
+const ranked = [...apps].sort((a, b) => (voteCounts[b.slug] || 0) - (voteCounts[a.slug] || 0));
+const destroyed = monthlyMRR(voteCounts);
+const digits = String(destroyed).split('');
+const categories = [...new Set(apps.map((app) => app.category))].sort();
+const query = Astro.url.searchParams.get('q') || '';
+
+const schemas = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteName,
+    url: canonical('/'),
+    description: defaultDescription,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${canonical('/')}?q={search_term_string}`,
+      'query-input': 'required name=search_term_string'
+    }
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: organizationName,
+    url: canonical('/'),
+    logo: canonical('/favicon.svg')
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'The Death List',
+    numberOfItems: ranked.length,
+    itemListElement: ranked.map((app, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: app.name,
+      url: canonical(`/${app.slug}`)
+    }))
+  }
+];
+---
+<BaseLayout schemas={schemas}>
+  <section class="hero container">
+    <p class="eyebrow">The SaaS replacement index</p>
+    <h1>Can one prompt <em>kill your subscription?</em></h1>
+    <p class="hero-copy">Search a paid app. Get an honest verdict, the one-shot build prompt, and the parts nobody tells you are difficult.</p>
+    <div class="search-shell">
+      <span class="search-prefix">&gt;_</span>
+      <input class="search-input" data-search type="search" value={query} placeholder="Search Notion, Calendly, Loom…" autocomplete="off" aria-label="Search apps" />
+      <span class="search-kbd">/</span>
+    </div>
+    <div class="category-bar" aria-label="Filter by category">
+      <button class="chip" type="button" data-category="all" aria-pressed="true">⚡ ALL</button>
+      {categories.map((category) => (
+        <button class="chip" type="button" data-category={category} aria-pressed="false">{categoryMeta[category]?.emoji || '◻'} {category.toUpperCase()}</button>
+      ))}
+    </div>
+  </section>
+
+  <section class="container reveal" aria-label="Collective MRR destroyed">
+    <div class="market-board">
+      <div class="market-top">
+        <div class="market-label">CIVI / SaaS displacement index</div>
+        <div class="market-status"><span class="live-dot"></span> MARKET OPEN</div>
+      </div>
+      <div class="mrr-panel">
+        <p class="mrr-title">Collective MRR destroyed</p>
+        <div class="mrr-number" aria-label={`$${destroyed.toLocaleString('en-US')} per month`}>
+          <span>$</span>
+          <span class="odometer" aria-hidden="true">
+            {digits.map((digit) => (
+              <span class="odometer-digit">
+                <span class="odometer-wheel" data-digit={digit} style={`--digit:${digit}`}>
+                  {Array.from({ length: 10 }, (_, n) => <span>{n}</span>)}
+                </span>
+              </span>
+            ))}
+          </span>
+          <span class="mrr-suffix">/MO</span>
+        </div>
+      </div>
+      <div class="price-tape" aria-hidden="true">
+        <div class="tape-track">
+          {[...apps, ...apps].map((app) => <span class="tape-item">{app.name.toUpperCase()} <strong>−${app.priceMonthly}/MO</strong></span>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container" id="death-list">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Ranked by real intent</p>
+        <h2>The Death List</h2>
+        <p class="section-sub">The apps people say they have replaced, sorted by votes. Green means build it. Red means calm down.</p>
+      </div>
+      <div class="result-count"><span data-result-count>{ranked.length}</span> TARGETS FOUND</div>
+    </div>
+    <div class="death-list reveal" data-app-list>
+      <div class="list-head" aria-hidden="true">
+        <span>#</span><span>App</span><span>Category</span><span>Price</span><span>Verdict</span><span style="text-align:right">Votes</span>
+      </div>
+      {ranked.map((app, index) => (
+        <a
+          class="app-row"
+          href={`/${app.slug}`}
+          data-app-row
+          data-category={app.category}
+          data-search-index={`${app.name} ${app.domain} ${app.category} ${app.verdict}`.toLowerCase()}
+        >
+          <span class="rank">{String(index + 1).padStart(2, '0')}</span>
+          <span class="app-identity">
+            <img class="favicon" src={`/favicons/${app.slug}.png`} alt="" width="34" height="34" loading="lazy" />
+            <span class="app-name"><strong>{app.name}</strong><span class="app-domain">{app.domain}</span></span>
+          </span>
+          <span class="category cell-mono">{categoryMeta[app.category]?.emoji} {app.category}</span>
+          <span class="price">${app.priceMonthly}/mo</span>
+          <VerdictBadge verdict={app.verdict} />
+          <span class="vote-count">{voteCounts[app.slug].toLocaleString('en-US')}</span>
+        </a>
+      ))}
+      <div class="empty-state" data-empty-state>NO MATCHES. TRY A LESS EXPENSIVE PROBLEM.</div>
+    </div>
+  </section>
+
+  <section class="section container"><Waitlist /></section>
+
+  <script is:inline>
+    const search = document.querySelector('[data-search]');
+    const rows = [...document.querySelectorAll('[data-app-row]')];
+    const chips = [...document.querySelectorAll('[data-category]')];
+    const count = document.querySelector('[data-result-count]');
+    const empty = document.querySelector('[data-empty-state]');
+    let category = 'all';
+
+    function filterRows() {
+      const term = search.value.trim().toLowerCase();
+      let visible = 0;
+      rows.forEach((row) => {
+        const matchesTerm = !term || row.dataset.searchIndex.includes(term);
+        const matchesCategory = category === 'all' || row.dataset.category === category;
+        row.hidden = !(matchesTerm && matchesCategory);
+        if (!row.hidden) visible += 1;
+      });
+      count.textContent = visible;
+      empty.style.display = visible ? 'none' : 'block';
+      const url = new URL(location.href);
+      term ? url.searchParams.set('q', term) : url.searchParams.delete('q');
+      history.replaceState({}, '', url);
+    }
+
+    search?.addEventListener('input', filterRows);
+    chips.forEach((chip) => chip.addEventListener('click', () => {
+      category = chip.dataset.category;
+      chips.forEach((item) => item.setAttribute('aria-pressed', String(item === chip)));
+      filterRows();
+    }));
+    if (search?.value) filterRows();
+
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduced) {
+      document.querySelectorAll('.odometer-wheel').forEach((wheel) => {
+        const target = wheel.dataset.digit;
+        wheel.style.setProperty('--digit', '0');
+        requestAnimationFrame(() => requestAnimationFrame(() => wheel.style.setProperty('--digit', target)));
+      });
+    }
+  </script>
+</BaseLayout>
