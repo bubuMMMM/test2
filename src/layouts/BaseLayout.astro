@@ -18,6 +18,7 @@ const {
   schemas = [],
   noindex = false
 } = Astro.props;
+const schemaList = /** @type {Record<string, unknown>[]} */ (schemas);
 const fullTitle = title === siteName ? title : `${title} · ${siteName}`;
 const canonicalUrl = canonical(canonicalPath);
 const ogUrl = canonical(ogImage);
@@ -45,7 +46,7 @@ const ogUrl = canonical(ogImage);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
+    {schemaList.map((schema) => <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />)}
     <script is:inline>
       (() => {
         const saved = localStorage.getItem('civi-theme');
