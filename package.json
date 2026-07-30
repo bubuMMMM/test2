@@ -20,7 +20,7 @@
     "astro": "latest",
     "better-sqlite3": "latest",
     "satori": "latest",
-    "typescript": "latest"
+    "typescript": ">=6 <7"
   },
   "engines": {
     "node": "22.x"
