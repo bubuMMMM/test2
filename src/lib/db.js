@@ -70,6 +70,7 @@ export function getVoteCount(slug) {
 export function getVoteCounts() {
   const db = getDb();
   const rows = db.prepare('SELECT app_slug, COUNT(*) AS count FROM vote_events GROUP BY app_slug').all();
+  /** @type {Record<string, number>} */
   const counts = { ...seedVotes };
   for (const row of rows) counts[row.app_slug] = (counts[row.app_slug] || 0) + Number(row.count);
   return counts;
