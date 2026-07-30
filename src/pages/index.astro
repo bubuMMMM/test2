@@ -137,7 +137,7 @@ const schemas = [
   <script is:inline>
     const search = document.querySelector('[data-search]');
     const rows = [...document.querySelectorAll('[data-app-row]')];
-    const chips = [...document.querySelectorAll('[data-category]')];
+    const chips = [...document.querySelectorAll('.chip[data-category]')];
     const count = document.querySelector('[data-result-count]');
     const empty = document.querySelector('[data-empty-state]');
     let category = 'all';
