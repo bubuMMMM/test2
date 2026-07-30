@@ -100,7 +100,7 @@ async function renderOg({ app }) {
     ]),
     h('div', { display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', color: '#8f9a91', fontSize: '18px' }, [
       h('span', { display: 'flex' }, isHome ? `${apps.length} PAID APPS. ZERO HYPE.` : 'PROMPT + LOSSES + PRIOR ART'),
-      h('span', { display: 'flex', color: '#7cff6b' }, 'CAN-I-VIBECODE-IT.VERCEL.APP')
+      h('span', { display: 'flex', color: '#7cff6b' }, 'CAN-I-VIBECODE-IT-LIVE.VERCEL.APP')
     ])
   ]);
   const svg = await satori(node, { width: 1200, height: 630, fonts: [{ name: 'Space Grotesk', data: fontData, weight: 700, style: 'normal' }] });
