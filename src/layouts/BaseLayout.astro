@@ -18,8 +18,8 @@ const {
   schemas = [],
   noindex = false
 } = Astro.props;
-const jsonLd = (/** @type {Record<string, unknown>[]} */ (schemas))
-  .map((schema) => `<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`)
+const jsonLd = schemas
+  .map((schema: Record<string, unknown>) => `<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, '\\u003c')}</script>`)
   .join('');
 const fullTitle = title === siteName ? title : `${title} · ${siteName}`;
 const canonicalUrl = canonical(canonicalPath);
