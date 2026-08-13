@@ -1,0 +1,125 @@
+---
+export const prerender = false;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getApp } from '../lib/apps.js';
+
+const appSlug = Astro.url.searchParams.get('app') || '';
+const app = appSlug ? getApp(appSlug) : null;
+const appName = app?.name || Astro.url.searchParams.get('name') || 'your SaaS replacement';
+---
+<BaseLayout
+  title={`Build ${appName} for me — Can I Vibecode It?`}
+  description={`Book a short call to discuss a custom ${appName} build. Projects start at $99.`}
+  canonicalPath="/build-it-for-me"
+>
+  <main class="booking-page container">
+    <a class="booking-back" href={app ? `/${app.slug}` : '/'}>← BACK TO {app ? app.name.toUpperCase() : 'DIRECTORY'}</a>
+
+    <section class="booking-hero">
+      <div>
+        <p class="eyebrow">DONE-FOR-YOU BUILD</p>
+        <h1>Don’t want to vibecode it?<br /><span class="green">We’ll build it for you.</span></h1>
+        <p class="booking-lead">Tell us what you want, choose a preferred call window, and we’ll scope the fastest way to turn it into a working product.</p>
+      </div>
+      <aside class="booking-price-card">
+        <span>PROJECTS START AT</span>
+        <strong>$99</strong>
+        <small>Custom scope · no obligation</small>
+      </aside>
+    </section>
+
+    <section class="booking-grid">
+      <div class="booking-summary card">
+        <p class="eyebrow">YOUR BUILD</p>
+        <h2>{appName}</h2>
+        {app && <p>{app.notes}</p>}
+        <div class="booking-summary-row"><span>VERDICT</span><strong>{app ? app.verdict.toUpperCase() : 'CUSTOM'}</strong></div>
+        {app && <div class="booking-summary-row"><span>SAAS PRICE</span><strong>${app.priceMonthly}/MO</strong></div>}
+        <div class="booking-summary-row"><span>BUILD FROM</span><strong class="green">$99</strong></div>
+      </div>
+
+      <form class="booking-form card" data-booking-form>
+        <input type="hidden" name="app" value={app?.slug || appName} />
+        <div class="honeypot" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off" /></label></div>
+
+        <div class="booking-form-head">
+          <p class="eyebrow">BOOK A CALL</p>
+          <h2>Tell us what you need.</h2>
+          <p>We’ll use this to prepare the call so we can get straight to the build.</p>
+        </div>
+
+        <div class="booking-fields">
+          <label>
+            <span>YOUR NAME</span>
+            <input class="input" name="name" required maxlength="100" placeholder="Your name" autocomplete="name" />
+          </label>
+          <label>
+            <span>EMAIL</span>
+            <input class="input" name="email" required type="email" maxlength="254" placeholder="you@company.com" autocomplete="email" />
+          </label>
+          <label class="booking-field-full">
+            <span>WHAT DO YOU WANT BUILT?</span>
+            <textarea name="details" required maxlength="2000" rows="5" placeholder={`Example: I want a simpler ${appName} for my team, with only the core features we actually use.`}></textarea>
+          </label>
+          <label>
+            <span>PREFERRED DAY</span>
+            <input class="input" name="preferredDate" required type="date" />
+          </label>
+          <label>
+            <span>PREFERRED TIME</span>
+            <select name="preferredTime" required>
+              <option value="">Choose a window</option>
+              <option>09:00–11:00</option>
+              <option>11:00–13:00</option>
+              <option>14:00–16:00</option>
+              <option>16:00–18:00</option>
+            </select>
+          </label>
+        </div>
+
+        <button class="build-book-submit" type="submit">
+          <span>BOOK MY BUILD CALL</span>
+          <small>FROM $99 · NO OBLIGATION →</small>
+        </button>
+        <div class="booking-status" data-booking-status aria-live="polite"></div>
+      </form>
+    </section>
+  </main>
+
+  <script is:inline>
+    const form = document.querySelector('[data-booking-form]');
+    const status = document.querySelector('[data-booking-status]');
+    const dateInput = form?.querySelector('input[type="date"]');
+    if (dateInput) {
+      const today = new Date();
+      today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+      dateInput.min = today.toISOString().slice(0, 10);
+    }
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = form.querySelector('button[type="submit"]');
+      const original = button.innerHTML;
+      button.disabled = true;
+      button.innerHTML = '<span>SENDING…</span><small>PREPARING YOUR BUILD CALL</small>';
+      status.textContent = '';
+      try {
+        const payload = Object.fromEntries(new FormData(form));
+        const response = await fetch('/api/build-request', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || 'Could not submit');
+        form.reset();
+        status.textContent = 'REQUEST RECEIVED ✓ We’ll use your preferred slot to arrange the call.';
+        button.innerHTML = '<span>REQUEST RECEIVED ✓</span><small>WE’LL ARRANGE THE CALL</small>';
+      } catch (error) {
+        status.textContent = error.message || 'Something went wrong. Please try again.';
+        button.disabled = false;
+        button.innerHTML = original;
+      }
+    });
+  </script>
+</BaseLayout>
