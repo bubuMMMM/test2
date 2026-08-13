@@ -35,6 +35,18 @@ export function getDb() {
       source TEXT NOT NULL DEFAULT 'homepage',
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
+    CREATE TABLE IF NOT EXISTS build_requests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      app_slug TEXT NOT NULL,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      details TEXT NOT NULL,
+      preferred_date TEXT NOT NULL,
+      preferred_time TEXT NOT NULL,
+      ip_hash TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE INDEX IF NOT EXISTS idx_build_requests_email ON build_requests(email);
   `);
   return database;
 }
@@ -81,4 +93,22 @@ export function joinWaitlist(email, source = 'homepage') {
   const db = getDb();
   const info = db.prepare('INSERT OR IGNORE INTO waitlist (email, source) VALUES (?, ?)').run(normalized, source.slice(0, 80));
   return { accepted: info.changes === 1, email: normalized };
+}
+
+export function createBuildRequest({ appSlug, name, email, details, preferredDate, preferredTime, ip }) {
+  const db = getDb();
+  const info = db.prepare(`
+    INSERT INTO build_requests (
+      app_slug, name, email, details, preferred_date, preferred_time, ip_hash
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    appSlug.slice(0, 120),
+    name.slice(0, 100),
+    email.trim().toLowerCase().slice(0, 254),
+    details.slice(0, 2000),
+    preferredDate.slice(0, 10),
+    preferredTime.slice(0, 40),
+    hashIp(ip)
+  );
+  return { id: Number(info.lastInsertRowid) };
 }
