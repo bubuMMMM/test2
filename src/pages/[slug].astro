@@ -12,6 +12,8 @@ const app = getApp(slug);
 if (!app) return Astro.redirect('/404');
 const related = getRelated(app, 3);
 const votes = getVoteCount(app.slug);
+const canBuildForYou = app.verdict === 'yes' || app.verdict === 'kinda';
+const buildForMeUrl = `/build-it-for-me?app=${encodeURIComponent(app.slug)}&name=${encodeURIComponent(app.name)}`;
 const title = `Can you replace ${app.name} with one AI coding prompt?`;
 const description = `${verdictLabel(app.verdict)}: an honest breakdown of rebuilding ${app.name}, what you lose, prior art, and the one-shot AI coding prompt.`;
 const faqs = [
@@ -130,6 +132,17 @@ const schemas = [
       </div>
 
       <aside class="action-stack reveal">
+        {canBuildForYou && (
+          <div class="build-for-me-card">
+            <div class="build-for-me-eyebrow">SKIP THE VIBECODING</div>
+            <div class="build-for-me-title">Want us to build it?</div>
+            <p>Tell us what you need. We can turn this idea into a working custom build.</p>
+            <a class="build-for-me-button" href={buildForMeUrl}>
+              <span>JE VEUX QU’ON ME LE CONSTRUISE</span>
+              <small>BOOK A CALL · FROM $99 →</small>
+            </a>
+          </div>
+        )}
         <button class="vote-button" type="button" data-vote-button data-slug={app.slug}>I REPLACED THIS ↑</button>
         <a class="share-button" data-share-x href={`https://x.com/intent/post?text=${encodeURIComponent(`Can you replace ${app.name} with one AI coding prompt? ${verdictLabel(app.verdict)}.`)}&url=${encodeURIComponent(canonical(`/${app.slug}`))}`} target="_blank" rel="noreferrer">SHARE ON X ↗</a>
         <div class="vote-meter"><strong data-vote-count>{votes.toLocaleString('en-US')}</strong><span>PEOPLE SAY THEY REPLACED IT</span></div>
